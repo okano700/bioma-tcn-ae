@@ -57,7 +57,7 @@ def runModel(path:str, source:str, verbose:int):
 
     xTrain = ds.ts[:ds.lenTrain]
     xTest = ds.ts[ds.lenTrain:]
-
+    tf.config.set_soft_device_placement(True)
     scaler = MinMaxScaler()
 
     xTrain_scaled = scaler.fit_transform(xTrain.reshape(-1,1))
