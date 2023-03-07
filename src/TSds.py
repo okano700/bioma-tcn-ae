@@ -8,11 +8,12 @@ import json
 
 class TSds():
 
-    def __init__(self, df:pd.DataFrame, name:str, ts:np.array, source:str):
+    def __init__(self, df:pd.DataFrame, name:str, ts:np.array, source:str, lenTrain:int):
         self.df = df
         self.name = name
         self.ts = ts
         self.source = source
+        self.lenTrain = lenTrain
 
     @classmethod
     def read_UCR(cls, path:str):
@@ -32,7 +33,7 @@ class TSds():
         anomaly[int(name_aux[5]):int(name_aux[6]) + 1] = 1
         df['is_anomaly'] = anomaly
 
-        return cls(df = df, name = ds_name, ts = ts, source = "UCR")
+        return cls(df = df, name = ds_name, ts = ts, source = "UCR", lenTrain = int(name_aux[4]))
 
 
     @classmethod
@@ -43,8 +44,9 @@ class TSds():
         df = pd.read_csv(path)
         df.set_index('timestamp', inplace = True)
         ts = np.array(df['value'])
+        lenTrain = int(len(ts)*0.4)
 
-        return cls(df = df, name = ds_name, ts = ts, source ="YAHOO")
+        return cls(df = df, name = ds_name, ts = ts, source ="YAHOO", lenTrain = lenTrain)
 
     @classmethod
     def read_NAB(cls, path:str):
@@ -54,8 +56,9 @@ class TSds():
         df = pd.read_csv(path, parse_dates=[0], index_col= 0)
         ts = np.array(df.value)
         df['is_anomaly'] = cls._get_NAB_anomaly(df, ds_name)
+        lenTrain = int(len(ts)*0.4)
 
-        return cls(df = df, name = ds_name, ts = ts, source ="NAB")
+        return cls(df = df, name = ds_name, ts = ts, source ="NAB", lenTrain = lenTrain)
 
     @staticmethod
     def _get_NAB_anomaly(df:pd.DataFrame, ds_name:str = None, path:str = None):
