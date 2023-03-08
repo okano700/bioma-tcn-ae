@@ -57,6 +57,7 @@ def runModel(path:str, source:str, verbose:int):
 
 
     xTrain = ds.ts[:ds.lenTrain]
+    print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
     device_name = tf.test.gpu_device_name()
     print(device_name)
     tf.config.list_physical_devices(,)
