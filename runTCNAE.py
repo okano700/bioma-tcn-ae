@@ -54,13 +54,18 @@ def runModel(path:str, source:str, verbose:int):
     else:
         print('Invalid Source')
         return 0
-	
-	
+
+
     xTrain = ds.ts[:ds.lenTrain]
     device_name = tf.test.gpu_device_name()
     print(device_name)
+    tf.config.list_physical_devices(,)
+
+    gpus = tf.config.list_physical_devices(‘GPU’)
+
+    tf.config.set_visible_devices(gpus[0], ‘GPU’)
+
     xTest = ds.ts[ds.lenTrain:]
-    tf.config.set_soft_device_placement(True)
     scaler = MinMaxScaler()
 
     xTrain_scaled = scaler.fit_transform(xTrain.reshape(-1,1))
