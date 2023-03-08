@@ -54,8 +54,11 @@ def runModel(path:str, source:str, verbose:int):
     else:
         print('Invalid Source')
         return 0
-
+	
+	
     xTrain = ds.ts[:ds.lenTrain]
+    device_name = tf.test.gpu_device_name()
+    print(device_name)
     xTest = ds.ts[ds.lenTrain:]
     tf.config.set_soft_device_placement(True)
     scaler = MinMaxScaler()
@@ -68,7 +71,7 @@ def runModel(path:str, source:str, verbose:int):
     
     tcn_ae = TCNAE(latent_sample_rate = 2)
     start_time = time.time()
-    tcn_ae.fit(xTrain_scaled, xTrain_scaled, batch_size=32, epochs=2, verbose=1)
+    tcn_ae.fit(xTrain_scaled, xTrain_scaled, batch_size=32, epochs=50, verbose=1)
 
     print("> Training Time:", round(time.time() - start_time), "seconds.")
     start_time = time.time()
