@@ -29,7 +29,7 @@ class TSds():
         df = pd.DataFrame(ts, columns = ['value'])
         #self._features['DS_name'] = ds_name
         
-        anomaly = np.zeros(len(df), dtype = np.int)
+        anomaly = np.zeros(len(df), dtype = np.int32)
         anomaly[int(name_aux[5]):int(name_aux[6]) + 1] = 1
         df['is_anomaly'] = anomaly
 
@@ -69,7 +69,7 @@ class TSds():
             with open(path, "r") as jsonF:
                 an = json.load(jsonF)
 
-        aux = np.zeros(len(df), dtype = np.int)
+        aux = np.zeros(len(df), dtype = np.int32)
         for start, end in an[ds_name]:
             aux[df.index.get_loc(pd.to_datetime(start)): df.index.get_loc(pd.to_datetime(end))] = 1
         return aux
