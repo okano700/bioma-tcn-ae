@@ -33,7 +33,7 @@ class TSds():
         anomaly[int(name_aux[5]):int(name_aux[6]) + 1] = 1
         df['is_anomaly'] = anomaly
 
-        return cls(df = df, name = ds_name, ts = ts, source = "UCR", lenTrain = int(name_aux[4]))
+        return cls(df = df, name = split_name, ts = ts, source = "UCR", lenTrain = int(name_aux[4]))
 
 
     @classmethod
