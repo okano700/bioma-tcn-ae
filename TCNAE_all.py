@@ -47,7 +47,8 @@ def get_period(data:np.array, n:int)-> list:
 SEED = 42
 
 tf.keras.utils.set_random_seed(SEED)
-srcUCR = "../datsets/UCR_Anomaly_FullData/"
+
+srcUCR = "/mnt/nfs/home/eyokano/datsets/UCR_Anomaly_FullData/"
 UCR = [p for p in glob.glob(f"{srcUCR}/*.txt")]
 
 print("Running UCR DS", flush = True)
@@ -56,4 +57,5 @@ res_f = []
 UCR.sort()
 b_s = 32
 for path in UCR:
-    print(path)
+    ds = TSds.read_UCR(path)
+    print(ds.name)
