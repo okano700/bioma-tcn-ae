@@ -66,7 +66,7 @@ for path in UCR:
     if int(split_name[0]) < begin:
         continue
     print(f"{ds.name}", flush = True)
-    period = get_period(np.array(df['value'].loc[:ds.lenTrain]), 3)
+    period = get_period(np.array(ds.df['value'].loc[:ds.lenTrain]), 3)
     res = []
     for p in period:
         print(f"Running period{p}", flush = True)
