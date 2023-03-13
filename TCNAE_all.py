@@ -62,6 +62,7 @@ for path in UCR:
     ds = TSds.read_UCR(path)
 
     begin = 0
+    split_name = ds.name.split('_')
     if int(split_name[0]) < begin:
         continue
     print(f"{ds.name}", flush = True)
