@@ -1,4 +1,4 @@
-import utilities
+from src.utilities import slide_window, mahalanobis_distance
 import numpy
 from tcn import TCN
 import time
@@ -113,7 +113,7 @@ class TCNAE:
         tcn_enc = TCN(nb_filters=self.nb_filters, kernel_size=self.kernel_size, nb_stacks=self.nb_stacks, dilations=self.dilations, 
                       padding=self.padding, use_skip_connections=True, dropout_rate=self.dropout_rate, return_sequences=True,
                       kernel_initializer=self.conv_kernel_init, name='tcn-enc')(i)
-
+        print(tcn_enc.shape)
         # Now, adjust the number of channels...
         enc_flat = Conv1D(filters=self.filters_conv1d, kernel_size=1, activation=self.activation_conv1d, padding=self.padding)(tcn_enc)
 
@@ -135,7 +135,7 @@ class TCNAE:
 
         model = Model(inputs= i , outputs= o)
 
-        adam = optimizers.Adam(lr=self.lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, decay=0.0, amsgrad=True)
+        adam = optimizers.Adam(learning_rate=self.lr, beta_1=0.9, beta_2=0.999, epsilon=1e-08, amsgrad=True)
         model.compile(loss=self.loss, optimizer=adam, metrics=[self.loss])
         if verbose > 1:
             model.summary()
@@ -144,7 +144,7 @@ class TCNAE:
     def fit(self, train_X, train_Y, batch_size=32, epochs=40, verbose = 1):
         my_callbacks = None
         if self.use_early_stopping:
-            my_callbacks = [EarlyStopping(monitor='val_loss', patience=2, min_delta=1e-4, restore_best_weights=True)]
+            my_callbacks = [EarlyStopping(monitor='val_loss', patience=4, min_delta=1e-4, restore_best_weights=True)]
 
         keras_verbose = 0
         if verbose > 0:
@@ -168,12 +168,12 @@ class TCNAE:
         # do some padding in the end, since not necessarily the whole time series is reconstructed
         X_rec = numpy.pad(X_rec, ((0,0),(0, test_X.shape[1] - X_rec.shape[1] ), (0,0)), 'constant') 
         E_rec = (X_rec - test_X).squeeze()
-        Err = utilities.slide_window(pandas.DataFrame(E_rec), self.error_window_length, verbose = 0)
+        Err = slide_window(pandas.DataFrame(E_rec), self.error_window_length, verbose = 0)
         Err = Err.reshape(-1, Err.shape[-1]*Err.shape[-2])
         sel = numpy.random.choice(range(Err.shape[0]),int(Err.shape[0]*0.98))
         mu = numpy.mean(Err[sel], axis=0)
         cov = numpy.cov(Err[sel], rowvar = False)
-        sq_mahalanobis = utilities.mahalanobis_distance(X=Err[:], cov=cov, mu=mu)
+        sq_mahalanobis = mahalanobis_distance(X=Err[:], cov=cov, mu=mu)
         # moving average over mahalanobis distance. Only slightly smooths the signal
         anomaly_score = numpy.convolve(sq_mahalanobis, numpy.ones((50,))/50, mode='same')
         anomaly_score = numpy.sqrt(anomaly_score)

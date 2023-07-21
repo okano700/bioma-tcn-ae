@@ -8,8 +8,6 @@ from scipy.signal import periodogram
 from math import floor
 import time
 from src.tcnae import TCNAE
-from sklearn.metrics import roc_auc_score, roc_curve, auc, RocCurveDisplay, classification_report
-
 
 
 def create_sequences(values, time_steps:int):
@@ -42,29 +40,6 @@ def get_period(data:np.array, n:int)-> list:
                 p.append(v)
             aux+=1
     return p
-
-
-def get_res(loss, df, m_v):
-
-    # Generate AUC
-    fpr, tpr, thresholds = roc_curve(df['is_anomaly'].iloc[m_v:len(loss)], loss.loc[m_v:len(loss)])
-    res_auc = auc(fpr,tpr)
-    res.append({'Dataset':ds_name, 'Period': p, 'Iteration': it, 'Multiplier': m, 'AUC': res_auc})
-    pd.DataFrame(res).to_csv(f'res/TCNAE_AUC_UCR_{begin}.csv', index = False)
-
-    # Generate f-score
-    for tr in [0.01, 0.02, 0.03,0.05, 0.07,0.1,0.2,0.3,0.5]:
-        resf = classification_report(df['anomaly'].iloc[m_v:len(loss)],[1 if it> tr else 0 for it in loss.loc[m_v:len(loss)] ],output_dict= True, target_names = ['normal','anomaly'], zero_division = 0)
-        res_f.append({'Dataset':ds_name,
-                            'Window_length':w_l,
-                            'Multiplier': m,
-                            'threshold': tr,
-                            'Period': p,
-                            'precision':resf['anomaly']['precision'],
-                            'recall':resf['anomaly']['recall'],
-                            'f1-score':resf['anomaly']['precision'],
-                            'acc':resf['accuracy']})
-        pd.DataFrame(res_f).to_csv(f'TCNAE_fscore_{begin}.csv', index = False)
 
 
 
@@ -102,7 +77,7 @@ def runModel(path:str, source:str, verbose:int):
     
     tcn_ae = TCNAE(latent_sample_rate = 2)
     start_time = time.time()
-    tcn_ae.fit(xTrain_scaled, xTrain_scaled, batch_size=32, epochs=2, verbose=1)
+    tcn_ae.fit(xTrain_scaled, xTrain_scaled, batch_size=32, epochs=50, verbose=1)
 
     print("> Training Time:", round(time.time() - start_time), "seconds.")
     start_time = time.time()

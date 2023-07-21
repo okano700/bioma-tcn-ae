@@ -113,7 +113,6 @@ class TCNAE:
         tcn_enc = TCN(nb_filters=self.nb_filters, kernel_size=self.kernel_size, nb_stacks=self.nb_stacks, dilations=self.dilations, 
                       padding=self.padding, use_skip_connections=True, dropout_rate=self.dropout_rate, return_sequences=True,
                       kernel_initializer=self.conv_kernel_init, name='tcn-enc')(i)
-
         # Now, adjust the number of channels...
         enc_flat = Conv1D(filters=self.filters_conv1d, kernel_size=1, activation=self.activation_conv1d, padding=self.padding)(tcn_enc)
 
