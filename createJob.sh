@@ -1,5 +1,5 @@
-#PBS -N TCNAE_UCR
-#PBS -l select=1:ngpu=1
+#PBS -N TCNAEUCR
+#PBS -l select=1:ngpus=1
 #PBS -l walltime=300:00:00
 #PBS -oe
 #PBS -m abe
