@@ -4,6 +4,6 @@
 #PBS -oe
 #PBS -m abe
 #PBS -M emerson.okano@unifesp.br
-#PBS -v
+#PBS -V
 
 python ~/bioma-tcn-ae/run_UCR.py --path ~/datsets/UCR_Anomaly_FullData/\*.txt --n 249
