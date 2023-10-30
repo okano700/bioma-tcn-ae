@@ -143,7 +143,7 @@ class TCNAE:
     def fit(self, train_X, train_Y, batch_size=32, epochs=40, verbose = 1):
         my_callbacks = None
         if self.use_early_stopping:
-            my_callbacks = [EarlyStopping(monitor='val_loss', patience=4, min_delta=1e-4, restore_best_weights=True)]
+            my_callbacks = [EarlyStopping(monitor='val_loss', patience=10, min_delta=1e-4, restore_best_weights=True)]
 
         keras_verbose = 0
         if verbose > 0:

@@ -19,7 +19,11 @@ def create_sequences(values, time_steps:int):
 
 if __name__ =="__main__":
     
+    
+    print(tf.config.list_physical_devices("GPU"))
+    print(tf.test.is_built_with_cuda())
     #read the parser
+
 
     parser = argparse.ArgumentParser()
 
@@ -34,7 +38,7 @@ if __name__ =="__main__":
 
     print(args)
 
-    SEQ_LEN = args.WL * args.n
+    SEQ_LEN = args.WL * args.n #if (args.WL * args.n)%2 == 0 else (args.WL * args.n) + 1
 
     tf.random.set_seed(args.seed)
     
@@ -50,11 +54,11 @@ if __name__ =="__main__":
     xTrain_scaled = scaler.transform(xTrain.reshape(-1,1))
     xTest_scaled = scaler.transform(xTest.reshape(-1,1))
 
-    xTrain_scaled = create_sequences(xTrain_scaled,args.WL*args.n)
+    xTrain_scaled = create_sequences(xTrain_scaled,SEQ_LEN)
     
     #Treino TCNAE
-    tcn_ae = TCNAE(latent_sample_rate = 2)
-    tcn_ae.fit(xTrain_scaled, xTrain_scaled, batch_size=32, epochs=5, verbose=1)
+    tcn_ae = TCNAE(latent_sample_rate = args.WL, use_early_stopping=True)
+    tcn_ae.fit(xTrain_scaled, xTrain_scaled, batch_size=32, epochs=50, verbose=1)
 
     test = scaler.transform(ds.df['value'].values.reshape(-1,1))[np.newaxis,:,:]
 
