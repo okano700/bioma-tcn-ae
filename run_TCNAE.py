@@ -36,7 +36,7 @@ if __name__ =="__main__":
 
     args = parser.parse_args()
 
-    print(args)
+    print(args,flush = True)
 
     SEQ_LEN = args.WL * args.n #if (args.WL * args.n)%2 == 0 else (args.WL * args.n) + 1
 
