@@ -2,7 +2,7 @@ from src.tcnae import TCNAE
 from sklearn.metrics import roc_auc_score, roc_curve, auc, RocCurveDisplay, classification_report
 from utils.TSds import TSds
 from utils.find_frequency import get_period
-from utils.scorer import scorer
+from utils.scores import scorer
 import tensorflow as tf
 import argparse
 import numpy as np
