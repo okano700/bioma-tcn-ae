@@ -3,16 +3,22 @@ import numpy as np
 import matplotlib.pyplot as plt
 import urllib.request
 import json
-
+from sklearn.preprocessing import MinMaxScaler
 
 class TSds():
 
-    def __init__(self, df:pd.DataFrame, name:str, ts:np.array, source:str, training:int):
+    def __init__(self, df:pd.DataFrame, name:str, ts:np.array, source:str, training:int, scaler = MinMaxScaler):
         self.df = df
         self.name = name
         self.ts = ts
         self.source = source
         self.train_split = training
+        self.scaler = scaler()
+        # Normalizing Data 
+        
+        self.scaler.fit(self.ts[:self.train_split].reshape(-1,1))
+
+        self.ts_scaled = self.scaler.fit_transform(self.ts.reshape(-1,1))
 
     @classmethod
     def read_UCR(cls, path:str):
@@ -35,26 +41,30 @@ class TSds():
 
 
     @classmethod
-    def read_YAHOO(cls,path:str):
+    def read_YAHOO(cls,path:str, train_split:float = 0.4):
         
         split_name = str(path).split('/')
         ds_name = '/'.join(split_name[-2:])
         df = pd.read_csv(path)
+        if "timestamp" not in df:
+            df.rename(columns={"timestamps":"timestamp", "anomaly":"is_anomaly"}, inplace=True)
         df.set_index('timestamp', inplace = True)
         ts = np.array(df['value'])
+        training = int(len(ts)*train_split)
 
-        return cls(df = df, name = ds_name, ts = ts, source ="YAHOO")
+        return cls(df = df, name = ds_name, ts = ts, source ="YAHOO",training = training)
+
 
     @classmethod
-    def read_NAB(cls, path:str, training:float = 0.4):
+    def read_NAB(cls, path:str, train_split:float = 0.4):
         
         split_name = str(path).split('/')
         ds_name = '/'.join(split_name[-2:])
         df = pd.read_csv(path, parse_dates=[0], index_col= 0)
         ts = np.array(df.value)
-        df['is_anomaly'] = cls._get_NAB_anomaly(df, ds_name)
-
-        return cls(df = df, name = ds_name, ts = ts, source ="NAB", training = int(len(ts)*training))
+        training = int(len(ts)*train_split)
+        df['is_anomaly'] = cls._get_NAB_anomaly(df, ds_name, path = '/lustre/eyokano/datasets/NAB/combined_windows.json')
+        return cls(df = df, name = ds_name, ts = ts, source ="NAB", training = training)
 
     @staticmethod
     def _get_NAB_anomaly(df:pd.DataFrame, ds_name:str = None, path:str = None):

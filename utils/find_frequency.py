@@ -15,8 +15,7 @@ def get_period(data:np.array, n:int)-> list:
             break
         elif len(p) == 0:
             if f[np.argmax(px)] == 0:
-                for i in range(n):
-                    p.append(int(len(data)/10 +i))
+                p.append(int(len(data)/10))
                 return p
             p.append(floor(1/f[np.argmax(px)] + 0.5))
         else:
