@@ -46,7 +46,7 @@ class TSds():
         return cls(df = df, name = ds_name, ts = ts, source ="YAHOO")
 
     @classmethod
-    def read_NAB(cls, path:str):
+    def read_NAB(cls, path:str, training:float = 0.4):
         
         split_name = str(path).split('/')
         ds_name = '/'.join(split_name[-2:])
@@ -54,7 +54,7 @@ class TSds():
         ts = np.array(df.value)
         df['is_anomaly'] = cls._get_NAB_anomaly(df, ds_name)
 
-        return cls(df = df, name = ds_name, ts = ts, source ="NAB")
+        return cls(df = df, name = ds_name, ts = ts, source ="NAB", training = int(len(ts)*training))
 
     @staticmethod
     def _get_NAB_anomaly(df:pd.DataFrame, ds_name:str = None, path:str = None):
