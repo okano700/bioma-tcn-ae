@@ -45,7 +45,7 @@ class TSds():
         
         split_name = str(path).split('/')
         ds_name = '/'.join(split_name[-2:])
-        df = pd.read_csv(path)
+        df = pd.read_csv(path, dtype = {'value':np.float64})
         if "timestamp" not in df:
             df.rename(columns={"timestamps":"timestamp", "anomaly":"is_anomaly"}, inplace=True)
         df.set_index('timestamp', inplace = True)
@@ -60,7 +60,7 @@ class TSds():
         
         split_name = str(path).split('/')
         ds_name = '/'.join(split_name[-2:])
-        df = pd.read_csv(path, parse_dates=[0], index_col= 0)
+        df = pd.read_csv(path, parse_dates=[0], index_col= 0, dtype={'value': np.float64})
         ts = np.array(df.value)
         training = int(len(ts)*train_split)
         df['is_anomaly'] = cls._get_NAB_anomaly(df, ds_name, path = '/lustre/eyokano/datasets/NAB/combined_windows.json')

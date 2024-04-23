@@ -2,7 +2,7 @@ from scipy.signal import periodogram
 from math import floor
 import numpy as np 
 import argparse
-from TSds import TSds
+from utils.TSds import TSds
 
 
 def get_period(data:np.array, n:int)-> list:

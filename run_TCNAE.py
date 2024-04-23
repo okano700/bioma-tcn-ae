@@ -58,7 +58,7 @@ if __name__ =="__main__":
     
     #Treino TCNAE
     tcn_ae = TCNAE(latent_sample_rate = args.WL, use_early_stopping=True)
-    tcn_ae.fit(xTrain_scaled, xTrain_scaled, batch_size=32, epochs=50, verbose=1)
+    tcn_ae.fit(xTrain_scaled, xTrain_scaled, batch_size=8, epochs=50, verbose=1)
 
     test = scaler.transform(ds.df['value'].values.reshape(-1,1))[np.newaxis,:,:]
 
@@ -78,7 +78,7 @@ if __name__ =="__main__":
     res['n'] = args.n 
     res['id'] = args.i 
 
-    path_to_res = "res_TCNAE_UCR.csv"
+    path_to_res = "res_TCNAE_UCR_falta.csv"
 
     if os.path.exists(path_to_res):
         print('existe')

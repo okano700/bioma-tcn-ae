@@ -22,6 +22,6 @@ if __name__ == "__main__":
             for n in [2, 3, 5]:
                 
                 for i in range(5):
-                    os.system(f"python3 ~/bioma-tcn-ae/run_TCNAE.py --path {data} --WL {period} --n {n} --i {i} --seed {i} >> log_TCNAE_NAB.log")
+                    os.system(f"python3 ~/bioma-tcn-ae/run_TCNAE_NAB.py --path {data} --WL {period} --n {n} --i {i} --seed {i} >> log_TCNAE_NAB.log")
 
                     print(f"python3 ~/bioma-tcn-ae/run_TCNAE.py --path {data} --WL {period} --n {n} --i {i} --seed {i}")
